@@ -43,6 +43,7 @@ d3.json("https://gist.githubusercontent.com/mbostock/4348373/raw/85f18ac90409caa
 
   root = d3.hierarchy(root);
   root.sum(function(d) { return d.size; });
+  console.log(root);
   console.log(partition(root));
   svg.selectAll("path")
       .data(partition(root).descendants())
