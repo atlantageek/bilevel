@@ -22,47 +22,6 @@
 let attributes = ['promoter','detractor','neutral'];
 
 var root = d3.hierarchy(data, (d) => {return d.children});
-
-//root.sum(function(d) {return d.size;})
-root.eachAfter(function(d) {
-  if (d.hasOwnProperty('children')) {
-      let e = d['children'].reduce((sumchild, child) => {
-        //console.log('NODE' + node);
-        //console.log(child);
-        result = {value:{}};
-        if (sumchild == undefined) {
-          sumchild.value={};
-          attributes.forEach((e) =>{sumchild.value[e] = 0;})
-
-        }
-        if (sumchild.value == undefined) {
-          sumchild.value={};
-          attributes.forEach((e) =>{sumchild.value[e] = 0;});
-        }
-        attributes.forEach((e) =>{result.value[e] = sumchild.value[e] + child.value[e];});
-        //sumchild.value['promoter'] +=child.value['promoter'];
-        //sumchild.value['detractor'] +=child.value['detractor'];
-        //sumchild.value['neutral'] +=child.value['neutral'];
-
-        sumchild.value = result.value;
-        return result
-      });
-      d.value = e.value;
-
-  }
-  else {
-    //console.log("Leaf");
-    //console.log(d);
-    d.value = {'promoter': d.data.promoter, 'detractor': d.data.detractor, 'neutral': d.data.neutral};
-
-  }
-  console.log(d.data.name + "," )
-  console.log(d.value);
-})
-
-// x = angular
-// y = depth 0-1
-var colors = {promoter:'green', detractor: 'red', neutral: 'blue'}
 function buildPaths(head, depth) {
   var result = [];
   var lvlRange = 1.0/depth;
@@ -98,7 +57,43 @@ function buildPaths(head, depth) {
 
   })
   console.log(result);
+  return result;
 }
+
+//root.sum(function(d) {return d.size;})
+root.eachAfter(function(d) {
+  if (d.hasOwnProperty('children')) {
+      let e = d['children'].reduce((sumchild, child) => {
+        result = {value:{}};
+        if (sumchild == undefined) {
+          sumchild.value={};
+          attributes.forEach((e) =>{sumchild.value[e] = 0;})
+
+        }
+        if (sumchild.value == undefined) {
+          sumchild.value={};
+          attributes.forEach((e) =>{sumchild.value[e] = 0;});
+        }
+        attributes.forEach((e) =>{result.value[e] = sumchild.value[e] + child.value[e];});
+        //sumchild.value['promoter'] +=child.value['promoter'];
+        //sumchild.value['detractor'] +=child.value['detractor'];
+        //sumchild.value['neutral'] +=child.value['neutral'];
+
+        //sumchild.value = result.value;
+        return result
+      });
+      d.value = e.value;
+
+  }
+  else {
+    d.value = {'promoter': d.data.promoter, 'detractor': d.data.detractor, 'neutral': d.data.neutral};
+
+  }
+})
+console.log(root);
+// x = angular
+// y = depth 0-1
+var colors = {promoter:'green', detractor: 'red', neutral: 'blue'}
 
 
 var margin = {top: 350, right: 480, bottom: 350, left: 480},
@@ -106,7 +101,6 @@ var margin = {top: 350, right: 480, bottom: 350, left: 480},
 
 var x = d3.scaleLinear()
         .range([0, 2 * Math.PI]);
-
 var y = d3.scaleSqrt()
         .range([0, radius]);
 var depth_levels = 3;
@@ -118,21 +112,17 @@ var svg = d3.select("body").append("svg")
      .attr("transform", "translate(" + margin.left + "," + margin.top + ")" );
 
 var arc = d3.arc()
-         .startAngle(function(d) { return d.x; })
-         .endAngle(function(d) { return d.x + d.dx ; })
-         .innerRadius(function(d) { return radius / 3 * d.depth; })
-         .outerRadius(function(d) { return radius / 3 * (d.depth + 1) - 1; });
+         .startAngle(function(d) { let v = Math.max(0, Math.min(2 * Math.PI, x(d.x0))); return v;})
+         .endAngle(function(d) { let v = Math.max(0, Math.min(2 * Math.PI, x(d.x1))); return v;})
+         .innerRadius(function(d) { let v = y(d.y0); console.log(v);return v;})
+         .outerRadius(function(d) { let v = y(d.y1); console.log(v);return v;});
 var dataPaths = buildPaths(root,3);
-root.eachAfter(function(d) {
-
-})
+console.log(dataPaths);
 //var center = svg.append("circle").attr("r", radius/3)
   //.on("click", zoomOut)
-  console.log(root);
 //  let v = d3.partition(root)//.nodes//.descendants();
-//  console.log(v);
-var path = svg.selectAll("path").data(root)
-  .enter().append("path").attr("d",arc).style("fill", function(d) { return "#cccccc"});
+var path = svg.selectAll("path").data(dataPaths)
+  .enter().append("path").attr("d",arc).style("stroke","black").style("stroke-width","1").style("fill", function(d) { return d.fill});
   //.each(function(d) { this._current = updateArc(d);})
   //.on("click", zoomIn)
 
