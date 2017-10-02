@@ -9,39 +9,39 @@ var data = {
              children: [
                {
                  name: "Location AAA",
-                 neutral: 10,
-                 promoter: 12,
-                 detractor: 5
+                 neutral: 1,
+                 promoter: 1,
+                 detractor: 1
                },
                {
                  name: "Location AAB",
-                 neutral: 10,
-                 promoter: 12,
-                 detractor: 5
+                 neutral: 1,
+                 promoter: 1,
+                 detractor: 1
                },
                {
                  name: "Location AAC",
-                 neutral: 10,
-                 promoter: 12,
-                 detractor: 5
+                 neutral: 1,
+                 promoter: 1,
+                 detractor: 1
                },
                {
                  name: "Location AAD",
-                 neutral: 10,
-                 promoter: 12,
-                 detractor: 5
+                 neutral: 1,
+                 promoter: 1,
+                 detractor: 1
                },
                {
                  name: "Location AAE",
-                 neutral: 10,
-                 promoter: 12,
-                 detractor: 5
+                 neutral: 1,
+                 promoter: 1,
+                 detractor: 1
                },
                {
                  name: "Location AAF",
-                 neutral: 10,
-                 promoter: 12,
-                 detractor: 5
+                 neutral: 1,
+                 promoter: 1,
+                 detractor: 1
                }
              ]
            },
@@ -50,39 +50,39 @@ var data = {
              children: [
                {
                  name: "Location ABA",
-                 neutral: 10,
-                 promoter: 12,
-                 detractor: 5
+                 neutral: 1,
+                 promoter: 1,
+                 detractor: 1
                },
                {
                  name: "Location ABB",
-                 neutral: 10,
-                 promoter: 12,
-                 detractor: 5
+                 neutral: 1,
+                 promoter: 1,
+                 detractor: 1
                },
                {
                  name: "Location ABC",
-                 neutral: 10,
-                 promoter: 12,
-                 detractor: 5
+                 neutral: 1,
+                 promoter: 1,
+                 detractor: 1
                },
                {
                  name: "Location ABD",
-                 neutral: 10,
-                 promoter: 12,
-                 detractor: 5
+                 neutral: 1,
+                 promoter: 1,
+                 detractor: 1
                },
                {
                  name: "Location ABE",
-                 neutral: 10,
-                 promoter: 12,
-                 detractor: 5
+                 neutral: 1,
+                 promoter: 1,
+                 detractor: 1
                },
                {
                  name: "Location ABF",
-                 neutral: 10,
-                 promoter: 12,
-                 detractor: 5
+                 neutral: 1,
+                 promoter: 1,
+                 detractor: 1
                }
              ]
            },
@@ -91,21 +91,21 @@ var data = {
              children: [
                {
                  name: "Location ACA",
-                 neutral: 10,
-                 promoter: 12,
-                 detractor: 5
+                 neutral: 1,
+                 promoter: 1,
+                 detractor: 1
                },
                {
                  name: "Location ACB",
-                 neutral: 10,
-                 promoter: 12,
-                 detractor: 5
+                 neutral: 1,
+                 promoter: 1,
+                 detractor: 1
                },
                {
                  name: "Location ACC",
-                 neutral: 10,
-                 promoter: 12,
-                 detractor: 5
+                 neutral: 1,
+                 promoter: 1,
+                 detractor: 1
                },
              ]
            }
