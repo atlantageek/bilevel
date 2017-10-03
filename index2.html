@@ -51,13 +51,38 @@ var arc = d3.arc()
          .innerRadius(function(d) { let v = y(d.y0); return v;})
          .outerRadius(function(d) { let v = y(d.y1); return v;});
 
+function findNode(name, currentNode) {
+  var i,
+    currentChild,
+    result;
 
+  if (name == currentNode.data.name) {
+    return currentNode;
+  } else {
+
+    // Use a for loop instead of forEach to avoid nested functions
+    // Otherwise "return" will not work properly
+    if (!currentNode.hasOwnProperty('children')) { return false;}
+    for (i = 0; i < currentNode.children.length; i += 1) {
+      currentChild = currentNode.children[i];
+
+      // Search in the current child
+      result = findNode(name, currentChild);
+
+      // Return the result if the node has been found
+      if (result !== false) {
+        return result;
+      }
+    }
+
+                 // The node has not been found and we have no more options
+    return false;
+  }
+}
 
 function buildPaths(head, depth) {
-  console.log("DEPTH");
-  console.log(head);
   y = d3.scaleLinear().range([0, radius]).domain([head.depth, head.depth + 3]);
-  console.log("===================");
+
   var result = [];
   var lvlRange = 1.0/depth;
   var startDepth = head.depth;
@@ -78,9 +103,8 @@ function buildPaths(head, depth) {
     }
     lastDepth = 0;
     for (var key in elem.value) {
-      console.log("--");
-      console.log(elemSum);
       path = {
+        name: elem.data.name,
         x0: depthTrackerX[elem.depth],
         x1: elemSum/sum + depthTrackerX[elem.depth],
         y0: (elem.depth + lastDepth),
@@ -98,14 +122,43 @@ function buildPaths(head, depth) {
 
   return result;
 }
-function zoomIn(e) {
+var t = d3.transition()
+    .duration(1500)
+    .ease(d3.easeLinear);
 
-  var dataPaths = buildPaths(root,3);
-  var path = svg.selectAll("path").data(dataPaths)
-    .enter().append("path").attr("d",arc).style("stroke","black").style("stroke-width","1").style("fill", function(d) { return d.fill}).on("click",zoomIn);
+function zoomIn(d) {
+  zoom(d.name);
+}
+function zoom(name) {
+  var currData = root;
+
+  if (name != null) {
+    currData= findNode(name,root);
+  }
+
+  var dataPaths = buildPaths(currData,3);
+  console.log(currData);
+  console.log(dataPaths);
+  //var paths = svg.selectAll("path").remove();
+  var paths = svg.selectAll("path").data(dataPaths,function(d) {return d.name + d.fill;});
+  //paths.update().transition().duration(750).attr("d",arc);
+  paths.exit().transition(t).attr("d",arc).style("fill-opacity",0).remove();
+  //paths.enter().append("path").attr("d",arc).style("stroke","black").style("stroke-width","1").style("fill", function(d) { return d.fill}).on("click",zoomIn);
+  paths.transition(t).attr("d",arc);
+}
+function init(name) {
+  var currData = root;
+  if (name != null) {
+    currData= findNode(name,root);
+  }
+  var dataPaths = buildPaths(currData,3);
+  //var paths = svg.selectAll("path").remove();
+  var paths = svg.selectAll("path").data(dataPaths,function(d) {return d.name + d.fill;});
+  console.log(dataPaths);
+  paths.enter().append("path").attr("d",arc).style("stroke","black").style("stroke-width","1").style("fill", function(d) { return d.fill}).on("click",zoomIn);
+  //paths.update().attr("d",arc);
 }
 //root.sum(function(d) {return d.size;})
-console.log(root);
 //Summarize
 root.eachAfter(function(d) {
   if (d.hasOwnProperty('children')) {
@@ -139,12 +192,15 @@ root.eachAfter(function(d) {
 
 
 
-var dataPaths = buildPaths(root.children[1],3);
-var path = svg.selectAll("path").data(dataPaths)
-  .enter().append("path").attr("d",arc).style("stroke","black").style("stroke-width","1").style("fill", function(d) { return d.fill}).on("click",zoomIn);
-  //.each(function(d) { this._current = updateArc(d);})
-  //.on("click", zoomIn)
-  svg.selectAll("path").data(dataPaths).exit().remove();
+//var dataPaths = buildPaths(root.children[1],3);
+// console.log("datapaths");
+// console.log(dataPaths);
+// var path = svg.selectAll("path").data(dataPaths)
+//   .enter().append("path").attr("d",arc).style("stroke","black").style("stroke-width","1").style("fill", function(d) { return d.fill}).on("click",zoomIn);
+//   //.each(function(d) { this._current = updateArc(d);})
+//   //.on("click", zoomIn)
+//   svg.selectAll("path").data(dataPaths).exit().remove();
+init(null);
 
 
 
