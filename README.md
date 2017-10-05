@@ -1,1 +1,3 @@
 # bilevel
+
+python -m SimpleHTTPServer
