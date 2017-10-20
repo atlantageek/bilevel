@@ -129,11 +129,9 @@ function buildPaths(head, depth) {
 
     return result;
 }
-var t = d3.transition()
-    .duration(4000).ease(d3.easeCubicIn);
-// var td = d3.transition()
-//         .delay(2000);
 function zoomIn(d) {
+    console.log("D=" );
+	console.log(d);
     zoom(d.name);
 }
 
@@ -143,43 +141,29 @@ function zoom(name) {
     if (name != null) {
         currData = findNode(name, root);
     }
-
+	console.log("CUR DATA");
+    console.log(currData);
     var dataPaths = buildPaths(currData, 4);
 
-    //var paths = svg.selectAll("path").remove();
     var paths = svg.selectAll("path").data(dataPaths, function(d) {
         return d.name + d.fill;
-    }).classed("head", function(d) {return d.name == name;});
-    //paths.update().transition().duration(750).attr("d",arc);
-    paths.exit().transition(t).attrTween("d", arcTween).style("stroke-opacity", 0).style("stroke-width", 0).style("fill-opacity", 1e-6).style("fill-opacity", 0).remove();
-    paths.enter().append("path").attr("d",arc).classed("head", function(d) {console.log(d == node); return d == node;}).style("stroke","black").style("stroke-width","1").style("fill", function(d) { return d.fill}).each(function(d) { this._current = arc(d); })
+    });
 
-    //paths.transition(t).attr("d",arc);
+    //Remove the ones going away
 
-    let t0 = paths.transition(t).attrTween("d", arcTween);
-    d3.selectAll(".head").transition(t).style("stroke-width", 0).style("fill-opacity", 1e-6).style("fill-opacity", 0).remove();//.transition(t).on("end", function(d) {console.log('Finished.')})
+    //Create the ones to create
+    paths.enter().append("path").attr("d", arc).each(function(d) {
+            this._current = d;
+        })
+        .style("stroke", "black").style("stroke-opacity", "1").style("stroke-width", "1").style("fill", function(d) { return d.fill }).on("click", zoomIn)
+    paths.exit().transition().duration(2000).style('opacity',0)
+
+
+    let t0 = paths.transition().duration(2000).attrTween("d", arcTween);
     console.log(t0);
 
 }
 
-function init(name) {
-    var currData = root;
-    if (name != null) {
-        currData = findNode(name, root);
-    }
-    var dataPaths = buildPaths(currData, 4);
-    //var paths = svg.selectAll("path").remove();
-    var paths = svg.selectAll("path").data(dataPaths, function(d) {
-        return d.name + d.fill;
-    });
-    paths.enter().append("path").attr("d", arc).each(function(d) {
-            this._current = d;
-        })
-        .style("stroke", "black").style("stroke-opacity", "1").style("stroke-width", "1").style("fill", function(d) {
-            return d.fill
-        }).on("click", zoomIn);
-    //paths.update().attr("d",arc);
-}
 //root.sum(function(d) {return d.size;})
 //Summarize
 root.eachAfter(function(d) {
@@ -249,4 +233,4 @@ function arcTween(a) {
 //   //.each(function(d) { this._current = updateArc(d);})
 //   //.on("click", zoomIn)
 //   svg.selectAll("path").data(dataPaths).exit().remove();
-init(null);
+zoom('root');
