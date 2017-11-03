@@ -10,9 +10,9 @@ var currentDepth = 0;
 // x = angular
 // y = depth 0-1
 var colors = {
-    promoter: 'green',
-    detractor: 'red',
-    neutral: 'blue'
+    promoter: '#95c53d',
+    neutral: '#f8ee4c',
+    detractor: '#bf4e4a'
 }
 
 
