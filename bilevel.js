@@ -118,7 +118,9 @@ function buildPaths(head, depth) {
                 fill: colors[key],
                 debug: elem
             }
-            if (head == elem) {path.class="root"}
+            if (head == elem) {
+		    path.class="root"
+	    }
 
             result.push(path);
             lastDepth += elem.value[key] / elemSum;
@@ -141,8 +143,6 @@ function zoom(name) {
     if (name != null) {
         currData = findNode(name, root);
     }
-	console.log("CUR DATA");
-    console.log(currData);
     var dataPaths = buildPaths(currData, 4);
 
     var paths = svg.selectAll("path").data(dataPaths, function(d) {
@@ -152,14 +152,22 @@ function zoom(name) {
     //Remove the ones going away
 
     //Create the ones to create
-    paths.enter().append("path").attr("d", arc).each(function(d) {
+    paths.enter().append("path").attr("d", arc).
+	style("opacity", function(d) {return (d.class == "root") ? 0.0 : 1.0}).on("end", function(d) { 
+		this._current = d
+	})
+	.each(function(d) {
             this._current = d;
         })
         .style("stroke", "black").style("stroke-opacity", "1").style("stroke-width", "1").style("fill", function(d) { return d.fill }).on("click", zoomIn)
-    paths.exit().transition().duration(2000).style('opacity',0)
+    paths.exit().transition().duration(2000).style('opacity',0).attrTween("d", arcTween)
 
 
-    let t0 = paths.transition().duration(2000).attrTween("d", arcTween);
+    let t0 = paths.transition().duration(2000).attrTween("d", arcTween)
+	.style("opacity", function(d) {return (d.class == "root") ? 0.0 : 1.0}).on("end", function(d) {
+                this._current = d;
+            })
+
     console.log(t0);
 
 }
@@ -208,13 +216,18 @@ root.eachAfter(function(d) {
 })
 
 function arcTween(a) {
-
+//0.436, 0.545
     var i0 = d3.interpolate(this._current.x0, a.x0);
     var i1 = d3.interpolate(this._current.x1, a.x1);
     var j0 = d3.interpolate(this._current.y0, a.y0);
     var j1 = d3.interpolate(this._current.y1, a.y1);
     //this._current = i(0);
     result = this._current;
+    this._current.x0 = a.x0;
+    this._current.x1 = a.x1;
+    this._current.y0 = a.y0;
+    this._current.y1 = a.y1;
+
     return function(t) {
         d = a;
         result.x0 = i0(t);
